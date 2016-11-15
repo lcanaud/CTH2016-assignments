@@ -22,11 +22,12 @@ const deco = ['*****************************************************************
 
 
 program
-	.option('-w, --width [uint]', 'Width');
-	.option('-s, --sentences [uint]', 'Number of sentences');
+	.option('-w, --width [uint]', 'Width')
+	.option('-s, --sentences [uint]', 'Number of sentences')
+	.parse(process.argv);
 
-var w = parseInt(program.width);
-var s = parseInt(program.sentences);
+var w = parseInt(program.width) || 64;
+var s = parseInt(program.sentences) || 5;
 
 //Functions :
 function choice(array) {
@@ -74,12 +75,33 @@ function maybe() {
     return ''};
 }
 
-/*
-for(var i =0; i < program.sentences; i++) {
-	console.log(maybe());
+var text = "";
+
+text += "\n\n" + decoration() + "\n";
+
+for(var i =0; i < s; i++) {
+
+	var variation = chance.natural({'min':0, 'max':10});
+
+    if (4 < variation) {
+        text += sentence1();
+    } 
+    if (5 < variation <7) {
+        text += alternative();
+    }
+    else {
+    	text += alternative2();
+    }
 
 }
-*/
+
+text += "\n\n" + end() + "\n";
+
+text += "YOU KNOW WHO...\n" + decoration() + "\n";
+
+console.log(wrap(text, {"width": w}));
+
+/*
 //text :
 console.log ("  ")
 console.log ("  ")
@@ -98,7 +120,7 @@ console.log (wrap("  ", {indent: '                                   '}));
 console.log (wrap('YOU KNOW WHO...' ,{indent: '                                              '}));
 console.log (decoration());
 console.log ("  ");
-
+*/
 
 
 

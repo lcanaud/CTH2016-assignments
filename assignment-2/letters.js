@@ -26,7 +26,7 @@ program
 	.option('-s, --sentences [uint]', 'Number of sentences')
 	.parse(process.argv);
 
-var w = parseInt(program.width) || 64;
+var w = parseInt(program.width) || 65;
 var s = parseInt(program.sentences) || 5;
 
 //Functions :
@@ -77,29 +77,29 @@ function maybe() {
 
 var text = "";
 
-text += "\n\n" + decoration() + "\n";
+text += "\n\n" + decoration() + "\n" + entry() + "\n";
 
 for(var i =0; i < s; i++) {
 
 	var variation = chance.natural({'min':0, 'max':10});
 
     if (4 < variation) {
-        text += sentence1();
+        text += sentence1() + " ";
     } 
     if (5 < variation <7) {
-        text += alternative();
+        text += alternative() + " ";
     }
     else {
-    	text += alternative2();
+    	text += alternative2() + " ";
     }
 
 }
 
-text += "\n\n" + end() + "\n";
+text += "\n\n" + (wrap(end(), {indent: '          '})) + "\n";
 
 text += "YOU KNOW WHO...\n" + decoration() + "\n";
 
-console.log(wrap(text, {"width": w}));
+console.log(wrap(text, {"width": w},{indent: ' '}));
 
 /*
 //text :

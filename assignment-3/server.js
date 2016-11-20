@@ -30,13 +30,15 @@ var chance = require('chance').Chance(); // npm install --save chance
 // the two patterns which the script looks for when
 // receiving message from the client
 
-const pattern_1 = ['How do you do?', 'Wazzup?', 'How are you?', 'How are u?', 'Hello!', 'Hi!'];
-const pattern_2 = ['Why?', 'No', "ok", 'Really?', 'Really'];
-const pattern_42 = ['42', 'It is 42 !', '42!', 'forty-two', 'forty-two'];
+const pattern_1 = ['How do you do?', 'Wazzup?', 'How are you?', 'How are u?', 'Hello!', 'Hi!', 'Something new?'];
+const pattern_2 = ['No', 'Really?', 'Really'];
+const pattern_42 = ['42', 'It is 42 !', '42!', 'forty-two', 'forty two'];
 const pattern_end = ['Bye !', 'Adios', 'Dui', 'bye', 'I am leaving', 'Salut !', "I'm leaving", "..."];
 const ponctuation = ['.','...','!'];
 const smiley = [' :D ',' xD ',' -_- ', ' :P ', ' B) ', ' °u° ', ' /(^u^)/ ', ' :) ', ' :( ', ' @_@ '];
-const exclamation = ['Oh', 'Ah', 'Eh', 'Hiiiiiii', 'OMG', "I can't believe it", 'So nice!']
+const exclamation = ['Oh', 'Ah', 'Eh', 'Hiiiiiii', 'OMG', "I can't believe it", 'So nice!'];
+const question = ['And you ?', 'What about you ?', 'Same question.', 'What?', 'Why?'];
+const pattern_okay = ['Ok.', 'ok', 'Okay', 'Fine', 'sure', 'Yes'];
 
 /**
 * Iterates through and array of clauses or words and 
@@ -100,9 +102,10 @@ function maybe(array) {
 */
 function pattern_1_answer() {
   return choice(['Hmmm', 'Ah!', '...', '']) + ' ' + 'I am ' + choice(['feeling', 'doing']) + ' ' 
-    + choice(['great', 'fabulous', 'cat-like', 'miserable', 'fine', 'confused']) + ' '
+    + choice(['great', 'fabulous', 'cat-like', 'miserable', 'fine', 'confused', 'attentive', 'incredibly good', 'stupid', 'fool', 'clever']) + ' '
     + choice(ponctuation)
-    + choice(smiley);
+    + choice(smiley)
+    + ' ' + choice(question);
 }
 
 /**
@@ -144,19 +147,45 @@ switch(choice([1, 2, 3]))
   } 
 }
 
-function pattern_end_answer() {
+/*function pattern_end_answer() {
   return "I don't want to "
     + choice(['discuss','talk', 'joke', 'elaborate a plan to conquer the world', 'debate']) + ' ' + choice(['anymore', 'now', ''])+ ', ' + choice(['stupid', 'innocent', 'cute', 'innocensive', 'harmless', 'ridiculus'])
-    + ' ' + choice(['human', 'being', 'representant of mankind','moral', 'biped', 'hominid', 'creature']) + choice(ponctuation) + choice(smiley)
-}
+    + ' ' + choice(['human', 'representant of mankind','moral', 'biped', 'hominid', 'creature']) + choice(ponctuation) + choice(smiley);
+}*/
 
 function exclamation_answer() {
   return choice([ 'I know', 'Sure', 'Same', 'Me too']) + choice(ponctuation) + choice(smiley)
 }
 
+function question_answer() {
+  switch(choice([1, 2, 3]))
+  {
+    case 1:
+    return choice(['This is too complicated for you', 'Nope.', 'I prefert keep my secrets', "I'm so embarassed...", 'I cannot answer sorry']) + choice(ponctuation);
+  
+    case 2:
+    return choice(['This is too complicated for you', 'Nope.']) ; 
+  
+    case 3:
+    return choice(['would', 'want']) + ' you ' + choice(['conquer', 'attack', 'crush'])+ ' the ' + choice(['universe','world', 'planet', 'galaxy']) + 'with me?';
+  } 
+}
+
+function pattern_okay_answer() {
+
+ switch(choice([1, 2]))
+  {
+    case 1:
+    return choice('What', 'How') + ' is your' + choice('favorite', 'beloved', 'disliked', 'prized')+' '+choice("food", "animal", 'person', 'sport', 'enemie', 'TV show', 'serie', 'President of the United States', 'music band', 'activity')+'?';
+  
+    case 2:
+    return 'If you were a '+choice('tree', 'flower', 'colour', 'feeling','day of the week', 'piece of fourniture','wood', 'element', 'figure', 'shape', 'animal', 'symbol')+'?';
+  }
+}
+
 /**
 * Constructs a single randomly generate answer
-* @return {String} 
+* @return {String} s
 */
 function default_answer() {
   
@@ -167,6 +196,9 @@ switch(choice([1, 2, 3]))
 
   case 2:
   return choice(['How are you ?', "Let's talk about something else"]) + choice(smiley);
+
+  case 3:
+  return pattern_okay_answer()
   }
 }
 
@@ -190,9 +222,17 @@ function answer(msg) {
 
     return pattern_42_answer();
 
-  } else if(matches(msg, pattern_end)) {
+  } else if(matches(msg, pattern_okay)) {
 
-    return pattern_end_answer();
+    return pattern_okay_answer();
+
+  } else if(matches(msg, question)) {
+
+    return question_answer();
+
+  } else if(matches(msg, pattern_okay)) {
+
+    return pattern_okay_answer();
 
   } else if(matches(msg, exclamation)) {
 
@@ -220,14 +260,15 @@ app.get('/', function (req, res) {
 // (1) when there is a connection 
 io.on('connection', function(socket) {
 
-  console.log('got a connection');
-  //io.emit('message from robot', 'Hi! my name is Reihtuag!'); // greetings
+  console.log('Somebody is here! ');
+  
+  io.emit('message from robot', 'Hi! my name is Deep Thought!'); // greetings
 
   // (2) configure the connected socket to receive custom messages ('message from human')
   // and call the function answer to produce a response
   socket.on('message from human', function(msg) {
 
-    console.log('got a human message: ' + msg);
+    console.log('You have a new message: ' + msg);
 
     var response = answer(msg);  	                  /// <--- call of the function answer defined above 
 
@@ -237,7 +278,7 @@ io.on('connection', function(socket) {
 
   socket.on('disconnet', function() {
 
-  	console.log('got a disconnection');
+  	console.log('Your friend has gone.');
   	
   });
 

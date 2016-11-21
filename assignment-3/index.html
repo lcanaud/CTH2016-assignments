@@ -26,9 +26,9 @@
 
 			<!-- inputs from human to send to server -->
 			<div id="inputs">
-				<label>To Localhost: </label>
+				<label>To Deep Thought: </label>
 				<input id="text_field" type="text" onkeydown="enter_message();"/>
-				<input type="button" value="Send" onclick="send_message();"/>
+				<input type="button" value="Send" onclick="send_message();" onKeyPress="if(event.keyCode == 13) validerForm();"/>
 			</div>
 
 		</div>		

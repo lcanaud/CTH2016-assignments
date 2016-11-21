@@ -6,8 +6,8 @@
           is to create a simple artificial conversation between the a human subject and the 
           script. The work is inspired by Alan Turing's Imitation Game and Joseph Weizenbaum's
           ELIZA. 
-  author: gauthier
-  date:   17/11/16
+  author: Lena Canaud (Based on David Gauthier's work)
+  date:   21/11/16
 */
 
 // import express ()
@@ -33,11 +33,12 @@ var chance = require('chance').Chance(); // npm install --save chance
 const pattern_1 = ['How do you do?', 'Wazzup?', 'How are you?', 'How are u?', 'Hello!', 'Hi!', 'Something new?'];
 const pattern_2 = ['No', 'Really?', 'Really'];
 const pattern_42 = ['42', 'It is 42 !', '42!', 'forty-two', 'forty two'];
-const pattern_end = ['Bye !', 'Adios', 'Dui', 'bye', 'I am leaving', 'Salut !', "I'm leaving", "..."];
+const pattern_3 = ['Bye !', 'Adios', 'Dui', 'bye', 'I am leaving', 'Salut !', "I'm leaving", "..."];
 const ponctuation = ['.','...','!'];
 const smiley = [' :D ',' xD ',' -_- ', ' :P ', ' B) ', ' °u° ', ' /(^u^)/ ', ' :) ', ' :( ', ' @_@ '];
 const exclamation = ['Oh', 'Ah', 'Eh', 'Hiiiiiii', 'OMG', "I can't believe it", 'So nice!'];
-const question = ['And you ?', 'What about you ?', 'Same question.', 'What?', 'Why?'];
+const question = ['And you?', 'What about you?', 'Same question.'];
+const question_basics = ['When?', 'Where', 'How?', 'What?', 'Why?']
 const pattern_okay = ['Ok.', 'ok', 'Okay', 'Fine', 'sure', 'Yes'];
 
 /**
@@ -96,12 +97,16 @@ function maybe(array) {
   }
 }
 
+function validerForm(){
+    document.getElementById("formulaire").submit();
+}
+
 /**
 * Constructs a single randomly generate answer
 * @return {String} 
 */
 function pattern_1_answer() {
-  return choice(['Hmmm', 'Ah!', '...', '']) + ' ' + 'I am ' + choice(['feeling', 'doing']) + ' ' 
+  return choice(['Hmmm', 'Ah!', 'Oh', '']) + choice(ponctuation) + 'I am ' + choice(['feeling', 'doing']) + ' ' 
     + choice(['great', 'fabulous', 'cat-like', 'miserable', 'fine', 'confused', 'attentive', 'incredibly good', 'stupid', 'fool', 'clever']) + ' '
     + choice(ponctuation)
     + choice(smiley)
@@ -147,11 +152,20 @@ switch(choice([1, 2, 3]))
   } 
 }
 
-/*function pattern_end_answer() {
-  return "I don't want to "
+// Commented function because when activated I remplaced 
+function pattern_3_answer() {
+  
+ switch(choice([1, 2]))
+  {
+    case 1:
+    return choice("I don't want to ", "I can't")
     + choice(['discuss','talk', 'joke', 'elaborate a plan to conquer the world', 'debate']) + ' ' + choice(['anymore', 'now', ''])+ ', ' + choice(['stupid', 'innocent', 'cute', 'innocensive', 'harmless', 'ridiculus'])
     + ' ' + choice(['human', 'representant of mankind','moral', 'biped', 'hominid', 'creature']) + choice(ponctuation) + choice(smiley);
-}*/
+
+    case 2:
+    return 'Okay '+choice(pattern_3)+choice(ponctuation);
+  }
+}
 
 function exclamation_answer() {
   return choice([ 'I know', 'Sure', 'Same', 'Me too']) + choice(ponctuation) + choice(smiley)
@@ -161,7 +175,7 @@ function question_answer() {
   switch(choice([1, 2, 3]))
   {
     case 1:
-    return choice(['This is too complicated for you', 'Nope.', 'I prefert keep my secrets', "I'm so embarassed...", 'I cannot answer sorry']) + choice(ponctuation);
+    return choice(['This is too complicated for you', 'Nope.', 'I prefert keep my secrets', "I'm so embarassed...", 'I cannot answer sorry', "I don't know"]) + choice(ponctuation);
   
     case 2:
     return choice(['This is too complicated for you', 'Nope.']) ; 
@@ -170,6 +184,7 @@ function question_answer() {
     return choice(['would', 'want']) + ' you ' + choice(['conquer', 'attack', 'crush'])+ ' the ' + choice(['universe','world', 'planet', 'galaxy']) + 'with me?';
   } 
 }
+
 
 function pattern_okay_answer() {
 
@@ -181,6 +196,10 @@ function pattern_okay_answer() {
     case 2:
     return 'If you were a '+choice('tree', 'flower', 'colour', 'feeling','day of the week', 'piece of fourniture','wood', 'element', 'figure', 'shape', 'animal', 'symbol')+'?';
   }
+}
+
+function smiley_answer() {
+  return choice(smiley)+' '+ choice(smiley)+' '+ choice(smiley);
 }
 
 /**
@@ -222,6 +241,10 @@ function answer(msg) {
 
     return pattern_42_answer();
 
+  } else if(matches(msg, pattern_3)) {
+
+    return pattern_3_answer();
+
   } else if(matches(msg, pattern_okay)) {
 
     return pattern_okay_answer();
@@ -229,6 +252,14 @@ function answer(msg) {
   } else if(matches(msg, question)) {
 
     return question_answer();
+
+  } else if(matches(msg, question_basics)) {
+
+    return question_answer();
+
+  } else if(matches(msg, smiley)) {
+
+    return smiley_answer();
 
   } else if(matches(msg, pattern_okay)) {
 

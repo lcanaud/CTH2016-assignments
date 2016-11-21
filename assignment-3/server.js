@@ -33,9 +33,9 @@ var chance = require('chance').Chance(); // npm install --save chance
 const pattern_1 = ['How do you do?', 'Wazzup?', 'How are you?', 'How are u?', 'Hello!', 'Hi!', 'Something new?'];
 const pattern_2 = ['No', 'Really?', 'Really'];
 const pattern_42 = ['42', 'It is 42 !', '42!', 'forty-two', 'forty two'];
-const pattern_3 = ['Bye !', 'Adios', 'Dui', 'bye', 'I am leaving', 'Salut !', "I'm leaving", "..."];
+const pattern_3 = ['Bye !', 'Adios', 'Dui', 'bye', 'I am leaving', 'Salut !', "I'm leaving"];
 const ponctuation = ['.','...','!'];
-const smiley = [' :D ',' xD ',' -_- ', ' :P ', ' B) ', ' °u° ', ' /(^u^)/ ', ' :) ', ' :( ', ' @_@ '];
+const smiley = [':D','xD','-_-', ':P', '°u°', '\(^u^\)', '@_@'];
 const exclamation = ['Oh', 'Ah', 'Eh', 'Hiiiiiii', 'OMG', "I can't believe it", 'So nice!'];
 const question = ['And you?', 'What about you?', 'Same question.'];
 const question_basics = ['When?', 'Where', 'How?', 'What?', 'Why?']
@@ -56,6 +56,10 @@ function matches(msg, array_of_patterns) {
   for(var i = 0; i < array_of_patterns.length; i++) {
 
     var pattern_lower = array_of_patterns[i].toLowerCase();
+
+  console.log(pattern_lower);
+  console.log(msg_lower);
+
 
     if(msg_lower.search(pattern_lower) > -1) {
 
@@ -158,7 +162,7 @@ function pattern_3_answer() {
  switch(choice([1, 2]))
   {
     case 1:
-    return choice("I don't want to ", "I can't")
+    return choice(["I don't want to ", "I can't"])
     + choice(['discuss','talk', 'joke', 'elaborate a plan to conquer the world', 'debate']) + ' ' + choice(['anymore', 'now', ''])+ ', ' + choice(['stupid', 'innocent', 'cute', 'innocensive', 'harmless', 'ridiculus'])
     + ' ' + choice(['human', 'representant of mankind','moral', 'biped', 'hominid', 'creature']) + choice(ponctuation) + choice(smiley);
 
@@ -191,15 +195,15 @@ function pattern_okay_answer() {
  switch(choice([1, 2]))
   {
     case 1:
-    return choice('What', 'How') + ' is your' + choice('favorite', 'beloved', 'disliked', 'prized')+' '+choice("food", "animal", 'person', 'sport', 'enemie', 'TV show', 'serie', 'President of the United States', 'music band', 'activity')+'?';
+    return choice(['What', 'How']) + ' is your ' + choice(['favorite', 'beloved', 'disliked', 'prized'])+' '+choice(["food", "animal", 'person', 'sport', 'enemie', 'TV show', 'serie', 'President of the United States', 'music band', 'activity'])+'?';
   
     case 2:
-    return 'If you were a '+choice('tree', 'flower', 'colour', 'feeling','day of the week', 'piece of fourniture','wood', 'element', 'figure', 'shape', 'animal', 'symbol')+'?';
+    return 'If you were a '+choice(['tree', 'flower', 'colour', 'feeling','day of the week', 'piece of fourniture','wood', 'element', 'figure', 'shape', 'animal', 'symbol'])+'?';
   }
 }
 
 function smiley_answer() {
-  return choice(smiley)+' '+ choice(smiley)+' '+ choice(smiley);
+  return ' '+ choice(smiley)+' '+ choice(smiley)+' '+ choice(smiley);
 }
 
 /**
@@ -292,6 +296,7 @@ app.get('/', function (req, res) {
 io.on('connection', function(socket) {
 
   console.log('Somebody is here! ');
+
   
   io.emit('message from robot', 'Hi! my name is Deep Thought!'); // greetings
 
